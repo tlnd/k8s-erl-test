@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: erlect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erlect
+  template:
+    metadata:
+      name: erlect
+      labels:
+        app: erlect
+    spec:
+      containers:
+      - name: erlect
+        image: quay.io/mgumz/erlect-master
+        args: ["/opt/erlect/bin/erlect", "foreground", "-eval", "net_kernel:connect('reg@erl-node-registry.tli.svc.cluster.local')"]
+        stdin: true
+        tty: true
+        env:
+        - name: NODE
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: SECRET
+          value: secret
