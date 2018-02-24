@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: erl-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: erl-worker
+  template:
+    metadata:
+      name: erl-worker
+      labels:
+        app: erl-worker
+    spec:
+      containers:
+      - name: worker
+        image: erlang:alpine
+        command: ["erl"]
+        args: ["-name", "test@$(NODE)", "-setcookie", "secret"]
+        stdin: true
+        tty: true
+        env:
+        - name: NODE
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP

@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: erl-node-registry
+spec:
+  selector:
+    app: erl-node-registry
+  ports:
+  - port: 10000
+    targetPort: 10000
+    name: disterl-mesh-0
+  - port: 4369 # this item here
+    targetPort: 4369
+    name: epmd

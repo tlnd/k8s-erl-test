@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: erl-node-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erl-node-registry
+  template:
+    metadata:
+      name: erl-node-registry
+      labels:
+        app: erl-node-registry
+    spec:
+      containers:
+      - name: registry
+        image: erlang:alpine
+        command: ["erl"]
+        args: ["-name", "reg@erl-node-registry.tli.svc.cluster.local", "-setcookie", "secret", "-kernel", "inet_dist_listen_min", "10000", "inet_dist_listen_max", "10000"]
+        stdin: true
+        tty: true
+        env:
+        - name: NODE
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
