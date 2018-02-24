@@ -17,7 +17,7 @@ spec:
       - name: worker
         image: erlang:alpine
         command: ["erl"]
-        args: ["-name", "test@$(NODE)", "-setcookie", "secret"]
+        args: ["-name", "test@$(NODE)", "-setcookie", "secret", "-eval", "net_kernel:connect('reg@erl-node-registry.tli.svc.cluster.local')."]
         stdin: true
         tty: true
         env:
