@@ -26,3 +26,5 @@ spec:
               fieldPath: status.podIP
         - name: SECRET
           value: secret
+        - name: NODE_PREFIX
+          value: test
