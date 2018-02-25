@@ -1,0 +1,45 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: erl-worker-sts
+spec:
+  selector:
+    app: erl-worker-sts
+  clusterIP: None
+  ports:
+  - port: 10000
+    targetPort: 10000
+    name: disterl-mesh-0
+  - port: 4369 # this item here
+    targetPort: 4369
+    name: epmd
+
+---
+
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: erl-worker-sts
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: erl-worker-sts
+  serviceName: "erl-worker-sts"
+  template:
+    metadata:
+      name: erl-worker-sts
+      labels:
+        app: erl-worker-sts
+    spec:
+      containers:
+      - name: worker
+        image: erlang:alpine
+        args: ["sh", "-c", "erl -name sts@$$HOSTNAME.erl-worker-sts -setcookie secret"]
+        stdin: true
+        tty: true
+        env:
+        - name: NODE
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
